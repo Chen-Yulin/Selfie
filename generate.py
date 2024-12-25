@@ -11,6 +11,7 @@ for subdir, _, files in os.walk(root_dir):
     if folder_name == '.':
         continue
 
+    files.sort(key=lambda file: os.path.getmtime(os.path.join(subdir, file)), reverse=True)
     for file in files:
         if any(file.lower().endswith(ext) for ext in image_extensions):
             image_path = os.path.relpath(os.path.join(subdir, file), root_dir)
@@ -18,8 +19,10 @@ for subdir, _, files in os.walk(root_dir):
 
 with open(readme_path, 'w') as f:
     f.write('# Image Gallery\n\n')
-    for folder, images in folder_images.items():
+    for folder in sorted(folder_images.keys(), reverse=True):
+        images = folder_images[folder]
         f.write(f'## {folder}\n\n')
+        print(folder)
         for image in images:
             f.write(f'![{os.path.basename(image)}]({image})\n\n')
 
